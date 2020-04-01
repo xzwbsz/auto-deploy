@@ -1,0 +1,60 @@
+#
+# Makefile Macros generated from /home/xzw/CESM/cesm1_2_1/scripts/ccsm_utils/Machines/config_compilers.xml using
+# COMPILER=gnu
+# OS=LINUX
+# MACH=HUAWEI-arm
+#
+CPPDEFS+= -DFORTRANUNDERSCORE -DNO_R16 -DFORTRANUNDERSCORE -DNO_R16 -DNO_MPIMOD -DLINUX -DCPRGNU 
+
+LDFLAGS+= -g -lgomp
+#SLIBS+=-L/opt/ohpc/pub/libs/gnu8/mpich/netcdf-fortran/4.5.2/lib -lnetcdff
+SLIBS+=-L/home/xzw/local/netcdf4.7.0-mcmodel3/lib  -lnetcdf -lnetcdff
+
+CXX_LINKER:=FORTRAN
+
+CFLAGS+= -O -g -mcmodel=medium -lgomp -fopenmp #-L/home/xzw/local/openmpi-mcmodel/lib/
+
+FC_AUTO_R8:= -fdefault-real-8 
+
+FFLAGS:= -g -lgomp -O -fopenmp -mcmodel=medium -fconvert=big-endian -ffree-line-length-none -ffixed-line-length-none #-L/home/xzw/local/openmpi-mcmodel/lib/
+
+FFLAGS_NOOPT:= -O0 
+
+FIXEDFLAGS:=  -ffixed-form 
+
+FREEFLAGS:= -ffree-form 
+
+MPICC:= mpicc  
+
+MPICXX:= mpicxx 
+
+MPIFC:= mpif90 
+
+#MPI_PATH:=/opt/ohpc/pub/mpi/mpich-gnu8-ohpc/3.3.1
+
+#NETCDF_PATH:=/home/xzw/local/netcdf-mcmodel
+
+#PNETCDF_PATH:=/home/xzw/lib/pnet-mcmodel
+
+SCC:= gcc 
+
+SCXX:= g++ 
+
+SFC:= gfortran 
+
+SUPPORTS_CXX:=TRUE
+
+ifeq ($(DEBUG), TRUE) 
+   FFLAGS += -g -Wall 
+endif
+
+ifeq ($(compile_threaded), true) 
+LDFLAGS += -fopenmp 
+CFLAGS += -fopenmp 
+FFLAGS += -fopenmp 
+endif
+
+ifeq ($(MODEL), cism) 
+   CMAKE_OPTS += -D CISM_GNU=ON 
+endif
+

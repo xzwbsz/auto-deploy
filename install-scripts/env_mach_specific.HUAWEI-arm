@@ -1,0 +1,29 @@
+#! /bin/csh -f
+
+# -------------------------------------------------------------------------
+# USERDEFINED
+# Edit this file to add module load or other paths needed for the build
+# and run on the system.  Can also include general env settings for machine.
+# Some samples are below
+# -------------------------------------------------------------------------
+
+#source /opt/modules/default/init/csh
+#if ( $COMPILER == "pgi" ) then
+#  module load pgi
+#endif
+#module load netcdf
+
+setenv MPICH_PATH "/home/jlucesm_env/openmpi-arm"
+setenv LD_LIBRARY_PATH "${MPICH_PATH}/lib:$LD_LIBRARY_PATH"
+setenv PATH "${MPICH_PATH}/bin:$PATH"
+
+setenv NETCDF_PATH "/home/jlucesm_env/netcdf-arm"
+setenv LD_LIBRARY_PATH "${NETCDF_PATH}/lib:$LD_LIBRARY_PATH"
+setenv PATH "${NETCDF_PATH}/bin:$PATH"
+
+setenv HDF5_PATH "/home/jlucesm_env/hdf5-arm"
+setenv LD_LIBRARY_PATH "${HDF5_PATH}/lib:$LD_LIBRARY_PATH"
+setenv PATH "${HDF5_PATH}/bin:$PATH"
+
+#limit coredumpsize unlimited
+

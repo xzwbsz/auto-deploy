@@ -1,0 +1,1 @@
+CC=mpicc CXX=mpicxx F90=mpif90 F77=mpif77 CFLAGS="-fPIC  -g " FCFLAGS=" -fPIC -lm -g "  ./configure --with-zlib=/home/jlucesm_env/zlib-arm --enable-parallel --enable-fortran --prefix=/home/jlucesm_env/hdf5-arm --enable-shared --enable-hl
