@@ -14,7 +14,7 @@ bash install-scripts/exptest.sh
 
 To implement HiRM, use such command:
 
-python HiRM
+python Hirm.py
 
 Note that user should install xlrd (version 1.2) and numpy before implemention.
 
