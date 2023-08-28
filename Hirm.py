@@ -1,11 +1,18 @@
 import xlrd
 import numpy as np
+import sympy as sp
 #import random
 
 env_mach_pes = [[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]] #用三行六列数组代表模块的排布状态，第1行是层数，第2行是起始进程位置,第3行是核数需求
+#默认定义item_id顺序为LND,ICE,WAV,GLC,ATM,OCN对应0,1,2,3,4,5
 shuffle0 = []
 layer_num = 0 #初始化层数
 capacity_left = []#初始化每层剩余空间
+
+
+lambda_1 = 5 #计算开销系数，由测试给出
+lambda_1 = 2 #通信开销洗漱，由测试给出
+cons = 10 #初始化及其他时间，由测试给出
 
 def load(fname):
     table = xlrd.open_workbook(fname).sheets()[0]   # 获取第一个sheet表
@@ -130,7 +137,7 @@ def put_into_layer(datamatrix, item_left, delta): #当前层塞入item定义
         layer_num += 1 #所有层都没放下，总层数+1，并在新的层上放入
         put_into_layer(datamatrix, item_left, delta) #递归放入操作
 
-def main():
+def CPS():
     fname = 'abcd.excel' #并行度曲线的excel路径
     delta = 1 #定义梯度步长
     capacity = 256 #总核数为256
@@ -151,8 +158,68 @@ def main():
                 #layer_item = get_layer_item(layer)
             put_into_layer(datamatrix, item_left, delta)
             del item_left[0]
+            CTP(env_mach_pes[3,5]) #对海洋实施CTP算法，任务再排序
     
-    print('The final pes is', env_mach_pes)
+    np.save('env.npy', env_mach_pes) #输出结果
+
+def hessian(f, variables): #求海森矩阵
+    """
+    Compute the Hessian matrix of a function f with respect to variables.
+    """
+    n = variables.shape[0]
+    hessian = np.zeros((n, n))
+    for i in range(n):
+        for j in range(i, n):
+            hessian[i][j] = f(*variables, i, j)
+            hessian[j][i] = hessian[i][j]
+    return hessian
+
+def jacobi(f,b):
+    x = sp.symbols('x')
+    x_1 = lon*lat/(x*p_node)
+    for idx in range(p_node):
+        T_ar = lambda_1*x_1*x + lambda_2*(x_1+b)
+    y = T_ar
+    dy = sp.diff(y,x)
+    FF = float(zx.evalf(subs={x:b,y:f}))
+    return FF
+
+def T_exec(b,lambda_1,lambda_2,p_node):
+    a = lon*lat/(b*p_node)
+    for idx in range(p_node):
+        T_ar = lambda_1*a*b
+        T_comm = lambda_2*(a+b)
+        T_exec += T_ar + T_comm
+    T_exec = T_exec - lambda_2*288 +cons
+    return T_exec
+
+def Newton(x0):
+    epsilon=1e-5
+    x=x0
+    gval= jacobi(T_exec(b,lambda_1,lambda_2,p_node),b)
+    hval= hessian(T_exec(b,lambda_1,lambda_2,p_node),b)
+    iter=0
+    theta = 1
+    while ((gval>epsilon)and(iter<10000)):
+       iter=iter+1
+       b=b-theta(hval/gval)
+       if (hval < 0):
+           printf('iter= %2d,hessian is not positive definite',iter)
+       printf('iter= %2d f(x)=%10.10f\n',iter,f(x))
+       gval= sp.diff(T_exec(b,lambda_1,lambda_2,p_node),b)
+       hval= hessian(T_exec(b,lambda_1,lambda_2,p_node),b)
+    end
+    if (iter==10000):
+        fprintf('did not converge')
+    return b
+    
+
+def CTP(p_node): #对海洋任务再排序
+    lon = 144 #网格经度
+    lat = 96  #网格纬度
+    b = lat // p_node     #默认从默认任务划分开始
+    b = Newton(b) #使用牛顿法找到最优解
+
 
 if __name__ == '__main__':
-    main()
+    CPS()
