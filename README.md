@@ -16,7 +16,7 @@ To implement HiRM, use such command:
 
 python Hirm.py
 
-Note that user should install xlrd (version 1.2) and numpy before implemention.
+Note that user should install xlrd (version 1.2), sympy and numpy before implemention.
 
 ## Experiment
 ![image](https://github.com/xzwbsz/auto-deploy/assets/44642002/69fe95af-c2c3-4c7e-93b3-d1448d7788f4)
